@@ -54,30 +54,35 @@ if(function_exists('mpd_duplicate_over_multisite')){
 
 	function mpd_log_persist_if_doesnt_exsist($source_post_id, $mpd_blog_id, $new_post_id){
 	    
-	    $current_blog_id = get_current_blog_id();
+	    $options = get_option( 'mdp_settings' );
+	    
+	    if((isset($options['allow_persist']) || !$options)){
 
-	    $args= array(
+		    $current_blog_id = get_current_blog_id();
 
-	        'source_id' => $current_blog_id,
-	        'destination_id' => $mpd_blog_id,
-	        'source_post_id' => $source_post_id
+		    $args= array(
 
-	    );
+		        'source_id' => $current_blog_id,
+		        'destination_id' => $mpd_blog_id,
+		        'source_post_id' => $source_post_id
 
-	    if(!mpd_is_there_a_persist($args)){
+		    );
 
-	        $persist_args = array(
+		    if(!mpd_is_there_a_persist($args)){
 
-	            'source_id'      => $current_blog_id,
-	            'destination_id' => $mpd_blog_id,
-	            'source_post_id' => $source_post_id,
-	            'destination_post_id' => $new_post_id
+		        $persist_args = array(
 
-	        );
+		            'source_id'      => $current_blog_id,
+		            'destination_id' => $mpd_blog_id,
+		            'source_post_id' => $source_post_id,
+		            'destination_post_id' => $new_post_id
 
-	        mpd_add_persist($persist_args);
+		        );
 
-	    }
+		        mpd_add_persist($persist_args);
+
+		    }
+		}
 
 	}
 	add_action('mpd_single_metabox_after', 'mpd_log_persist_if_doesnt_exsist', 100, 3);
